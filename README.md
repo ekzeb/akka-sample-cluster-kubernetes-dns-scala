@@ -7,10 +7,10 @@
   - `sbt docker:publishLocal`
 - #### Remote image
   - set `dockerUsername := Some(DOCKER_REG_USER_NAME) & ` 
-  - change ./kubernetes/akka-cluster.yml:Deployment:spec:template:spec:containers:image -> `DOCKER_REG_USER_NAME`/akka-sample-cluster-kubernetes-dns-scala:TAG
+  - change ./kubernetes/akka-cluster.yml:Deployment:spec:template:spec:`containers:image` -> `DOCKER_REG_USER_NAME`/akka-sample-cluster-kubernetes-dns-scala:`SBT_PROJECT_VERSION`
   - if not docker hub, set `dockerRepository := Some(DOCKER_REG_URL)`
   - `sbt docker:publish`
-  - comment out ./kubernetes/akka-cluster.yml:Deployment:spec:template:spec:imagePullPolicy: Never
+  - comment out ./kubernetes/akka-cluster.yml:Deployment:spec:template:spec:`imagePullPolicy: Never`
   
   
 - `./kube-create.sh`
