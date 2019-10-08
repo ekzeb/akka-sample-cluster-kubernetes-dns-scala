@@ -1,8 +1,16 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: akka
+  labels:
+    name: akka
+---
 apiVersion: "apps/v1"
 kind: Deployment
 metadata:
   name: "akka-sample-cluster-kubernetes-dns-scala"
+  namespace: akka
   labels:
     appName: "akka-sample-cluster-kubernetes-dns-scala"
 spec:
@@ -52,6 +60,7 @@ metadata:
   #OLD minikube annotations:
     #service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
   name: "akka-sample-cluster-kubernetes-dns-scala-internal"
+  namespace: akka
 spec:
   ports:
   - name: management
@@ -75,6 +84,7 @@ metadata:
   labels:
     appName: "akka-sample-cluster-kubernetes-dns-scala"
   name: "akka-sample-cluster-kubernetes-dns-scala"
+  namespace: akka
 spec:
   ports:
   - name: http

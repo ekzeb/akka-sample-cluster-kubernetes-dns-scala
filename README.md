@@ -14,7 +14,7 @@
   
   
 - `./kube-create.sh`
-- `minikube service akka-sample-cluster-kubernetes-dns-scala`
+- `minikube service akka-sample-cluster-kubernetes-dns-scala -n akka`
 
 ### Check 
 - `curl http:port/events` etc
