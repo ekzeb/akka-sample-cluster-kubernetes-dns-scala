@@ -23,16 +23,16 @@ object AppWatcher {
     Cluster(ctx.system).subscriptions !
       Subscribe(ctx.spawn(ClusterListener(ctx.self), "listener"), classOf[ClusterDomainEvent])
 
-    def run(evs: List[ClusterDomainEvent] = Nil): Behavior[Cmd] = {
+    def behavior(evs: List[ClusterDomainEvent] = Nil): Behavior[Cmd] = {
       Behaviors.receiveMessage {
         case Set(evt) =>
           ctx.log.info("C_EVT: " + evt)
-          run(evt :: evs)
+          behavior(evt :: evs)
         case Get(ref) =>
           ref ! evs
-          run(evs)
+          behavior(evs)
       }
     }
-    run(Nil)
+    behavior()
   }
 }
