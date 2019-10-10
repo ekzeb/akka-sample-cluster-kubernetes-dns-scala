@@ -26,7 +26,7 @@ object AppWatcher {
     def run(evs: List[ClusterDomainEvent] = Nil): Behavior[Cmd] = {
       Behaviors.receiveMessage {
         case Set(evt) =>
-          println("EVT: " + evt)
+          ctx.log.info("C_EVT: " + evt)
           run(evt :: evs)
         case Get(ref) =>
           ref ! evs
