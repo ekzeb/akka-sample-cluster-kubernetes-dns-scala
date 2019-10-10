@@ -1,6 +1,7 @@
 import com.typesafe.sbt.packager.docker._
 
 scalaVersion := "2.13.1"
+scalacOptions ++= Seq("-deprecation", "-feature", "-language:pos")
 
 enablePlugins(JavaServerAppPackaging)
 
@@ -8,7 +9,8 @@ libraryDependencies ++= {
   val managementV = "1.0.3"
   val akkaV       = "2.5.25"
   Seq(
-    //"com.typesafe.akka"             %% "akka-actor-typed"                  % akkaV,
+    "com.typesafe.akka"             %% "akka-actor-typed"                  % akkaV,
+    "com.typesafe.akka"             %% "akka-cluster-typed"                % akkaV,
     "com.lightbend.akka.management" %% "akka-management"                   % managementV,
     "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % managementV,
     "com.lightbend.akka.management" %% "akka-management-cluster-http"      % managementV
