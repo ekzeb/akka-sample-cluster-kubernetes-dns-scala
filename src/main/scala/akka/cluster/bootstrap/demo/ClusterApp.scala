@@ -16,14 +16,14 @@ import akka.util.Timeout
 
 import concurrent.duration._
 import scala.language.postfixOps
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 object ClusterApp extends App {
-  val typedSystem: ActorSystem[AppWatcher.Cmd] = ActorSystem(AppWatcher(), "demo")
-  implicit val untypedSystem                   = typedSystem.toUntyped
-  implicit val materializer                    = ActorMaterializer()
-  implicit val scheduler                       = untypedSystem.scheduler
-  implicit val timeout: Timeout                = 3.seconds
+  val actorsRoot: ActorSystem[EventsReqHandler.Cmd] = ActorSystem(ActorsRoot(), "demo")
+  implicit val untypedSystem                        = actorsRoot.toUntyped
+  implicit val materializer                         = ActorMaterializer()
+  implicit val scheduler                            = untypedSystem.scheduler
+  implicit val timeout: Timeout                     = 3.seconds
   import untypedSystem.dispatcher
 
   AkkaManagement(untypedSystem).start()
@@ -33,21 +33,23 @@ object ClusterApp extends App {
   val notReadyErr = { status: Try[MemberStatus] =>
     new RuntimeException("NOT READY STATUS " + status)
   }
-  val eventsReq = (ref: ActorRef[List[ClusterDomainEvent]]) => AppWatcher.Get(ref)
-  val cluster   = Cluster(typedSystem)
+  val eventsReq = { ref: ActorRef[List[ClusterDomainEvent]] =>
+    EventsReqHandler.Get(ref)
+  }
+
+  val cluster = Cluster(actorsRoot)
 
   val route = get {
     path("ready") {
-      val status = Try(cluster.selfMember.status)
-      if (status filter { readyStates } isSuccess) {
-        complete(StatusCodes.OK, "Status: " + status.get)
-      } else {
-        complete(
-          StatusCodes.InternalServerError,
-          status.toEither.swap
-            .getOrElse(notReadyErr(status))
-            .getLocalizedMessage
-        )
+      Try {
+        val status = cluster.selfMember.status
+        readyStates(status) -> status
+      } match {
+        case Success((ready, status)) =>
+          if (ready) complete(StatusCodes.OK, "Status: " + status)
+          else complete(StatusCodes.ServiceUnavailable, "Status: " + status)
+        case Failure(err) =>
+          complete(StatusCodes.InternalServerError, s"Akka cluster Node not ready: ${err.getLocalizedMessage}")
       }
     } ~ path("alive") {
       complete(StatusCodes.OK)
@@ -55,7 +57,7 @@ object ClusterApp extends App {
       complete("<h1>Say hello to akka-http</h1>")
     } ~ path("events") {
       complete {
-        typedSystem.ask { eventsReq } map { _.mkString("\n") }
+        actorsRoot.ask { eventsReq } map { _.mkString("\n") }
       }
     }
   }

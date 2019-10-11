@@ -1,7 +1,7 @@
 import com.typesafe.sbt.packager.docker._
 
 scalaVersion := "2.13.1"
-scalacOptions ++= Seq("-deprecation", "-feature", "-language:pos")
+scalacOptions ++= Seq("-deprecation", "-feature", "-language:postfixOps")
 
 enablePlugins(JavaServerAppPackaging)
 
