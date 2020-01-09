@@ -18,7 +18,7 @@ object ActorsRoot {
     Behaviors
       .supervise(Behaviors.receiveMessage[EventsReqHandler.Cmd] { cmd: EventsReqHandler.Cmd =>
         watcher ! cmd
-        Behavior.same
+        Behaviors.same
       })
       .onFailure(SupervisorStrategy.restart.withStopChildren(false))
   }

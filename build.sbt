@@ -6,14 +6,22 @@ scalacOptions ++= Seq("-deprecation", "-feature", "-language:postfixOps")
 enablePlugins(JavaServerAppPackaging)
 
 libraryDependencies ++= {
-  val managementV = "1.0.3"
-  val akkaV       = "2.5.25"
+  val management = "1.0.5"
+  val akka       = "2.6.1"
+  val http       = "10.1.11"
   Seq(
-    "com.typesafe.akka"             %% "akka-actor-typed"                  % akkaV,
-    "com.typesafe.akka"             %% "akka-cluster-typed"                % akkaV,
-    "com.lightbend.akka.management" %% "akka-management"                   % managementV,
-    "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % managementV,
-    "com.lightbend.akka.management" %% "akka-management-cluster-http"      % managementV
+    "com.typesafe.akka"             %% "akka-actor-typed"                  % akka,
+    "com.typesafe.akka"             %% "akka-cluster-typed"                % akka,
+    "com.typesafe.akka"             %% "akka-persistence"                  % akka,
+    "com.typesafe.akka"             %% "akka-persistence-query"            % akka,
+    "com.typesafe.akka"             %% "akka-cluster-sharding"             % akka,
+    "com.typesafe.akka"             %% "akka-discovery"                    % akka,
+    "com.typesafe.akka"             %% "akka-http"                         % http,
+    "com.typesafe.akka"             %% "akka-parsing"                      % http,
+    "com.typesafe.akka"             %% "akka-http-spray-json"              % http,
+    "com.lightbend.akka.management" %% "akka-management"                   % management,
+    "com.lightbend.akka.management" %% "akka-management-cluster-bootstrap" % management,
+    "com.lightbend.akka.management" %% "akka-management-cluster-http"      % management
   )
 }
 
